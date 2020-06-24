@@ -1,6 +1,7 @@
 from nameko.rpc import rpc
 
 import dependencies, schemas
+import json
 
 class GroupService:
     # ==========================================================
@@ -16,6 +17,13 @@ class GroupService:
     database = dependencies.Database()
 
     # ==========================================================
+    # -------------------------- Proxy -------------------------
+    # ==========================================================
+
+    game_rpc = RpcProxy('game_service')
+    user_rpc = RpcProxy('user_service')
+
+    # ==========================================================
     # ------------------------ Functions -----------------------
     # ==========================================================
 
@@ -25,146 +33,191 @@ class GroupService:
     @rpc
     def create_group(self, name):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
         self.database.create_group(name)
-        return schemas.GroupSchema().dumps(result)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def edit_group(self, id, name):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
-        self.database.edit_group(id,name)
-        return schemas.GroupSchema().dumps(result)
+        self.database.edit_group(id, name)
+        return schemas.ResultSchema().dumps(result)
     
     @rpc
     def delete_group(self, id):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
         self.database.delete_group(id)
-        return schemas.GroupSchema().dumps(result)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def get_all_group(self):
-        group = self.database.get_all_group()
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.get_all_group()
         self.database.close_connection()
-        return schemas.GroupSchema(many=True).dump(group)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def get_group_by_id(self,id):
-        group = self.database.get_group_by_id(id)
+        result = {
+            'status': 0,
+            'msg': ''           
+        }
+
+        result['data'] = self.database.get_group_by_id(id)
         self.database.close_connection()
-        return schemas.GroupSchema().dump(group)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def search_group(self,name):
-        group = self.database.search_group(name)
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.search_group(name)
         self.database.close_connection()
-        return schemas.GroupSchema().dump(group)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def get_all_schedule(self):
-        schedule = self.database.get_all_schedule()
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.get_all_schedule()
         self.database.close_connection()
-        return schemas.GroupSchema(many=True).dump(schedule)
+        return schemas.ResultSchema().dumps(result)
     
     @rpc
     def get_schedule_by_id(self, id):
-        schedule = self.database.get_schedule_by_id(id)
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.get_schedule_by_id(id)
         self.database.close_connection()
-        return schemas.GroupSchema().dump(schedule)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
-    def get_all_schedule_by_id_user(self, id):
-        schedule = self.database.get_all_schedule_by_id_user(id)
+    def get_schedule_by_id_user(self, id):
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.get_all_schedule_by_id_user(id)
         self.database.close_connection()
-        return schemas.GroupSchema(many=True).dump(schedule)
+        return schemas.ResultSchema().dumps(result)
     
     @rpc
-    def get_all_schedule_by_id_group(self, id):
-        schedule = self.database.get_all_schedule_by_id_group(id)
+    def get_schedule_by_id_group(self, id):
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.get_all_schedule_by_id_group(id)
         self.database.close_connection()
-        return schemas.GroupSchema(many=True).dump(schedule)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def add_schedule(self, id_group, id_user, date, start_time):
-        schedule = {
-            'err': 0,
+        result = {
+            'status': 0,
             'msg': ''
         }
 
         self.database.add_schedule(id_group, id_user, date, start_time)
-        return schemas.GroupSchema().dumps(schedule)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
-    def edit_schedule_date(self,id,date):
+    def edit_schedule_date(self, id, date):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
         self.database.edit_schedule_date(id,date)
-        return schemas.GroupSchema().dumps(result)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
-    def edit_schedule_start(self,id,start_time):
+    def edit_schedule_start(self, id, start_time):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
-        self.database.edit_schedule_start(id,start_time)
-        return schemas.GroupSchema().dumps(result)
+        self.database.edit_schedule_start(id, start_time)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
-    def edit_schedule_end(self,id,end_time):
+    def edit_schedule_end(self, id, end_time):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
-        self.database.edit_schedule_end(id,end_time)
-        return schemas.GroupSchema().dumps(result)
+        self.database.edit_schedule_end(id, end_time)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def delete_schedule(self, id):
-        schedule = self.database.delete_schedule(id)
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        self.database.delete_schedule(id)
         self.database.close_connection()
-        return schemas.GroupSchema().dump(schedule)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def add_group_member(self, id_group, id_user):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
         self.database.add_group_member(id_group, id_user)
-        return schemas.GroupSchema().dump(result)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def remove_group_member(self, id):
         result = {
-            'err': 0,
+            'status': 0,
             'msg': ''
         }
 
         self.database.remove_group_member(id)
-        return schemas.GroupSchema().dump(result)
+        return schemas.ResultSchema().dumps(result)
 
     @rpc
     def search_group_member(self, id_group):
-        member = self.database.search_group_member(id_group)
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.search_group_member(id_group)
         self.database.close_connection()
-        return schemas.GroupSchema(many=True).dump(member)
+        return schemas.ResultSchema().dumps(result)
 
     def __del__(self):
         print("Service Destructor")

@@ -7,7 +7,7 @@ import datetime
 # ========================================================================================
 # ----------------------------------- Database Wrapper -----------------------------------
 # ========================================================================================
-
+# n.rpc.group_service.get_all_group()
 class DatabaseWrapper:
 
     connection = None
@@ -42,7 +42,25 @@ class DatabaseWrapper:
         result = []
         sql = "SELECT * FROM `group` WHERE 1    "
         cursor.execute(sql)
-        for row in cursor.fetchall():
+        if (cursor.rowcount != 0):
+            for row in cursor.fetchall():
+                result.append({
+                    'id': row['id'],
+                    'name': row['name'],
+                    'status': row['status'],
+                    'created_at': row['created_at'],
+                    'last_update': row['last_update']
+                })
+        cursor.close()
+        return result
+
+    def get_group_by_id(self,id):
+        cursor = self.connection.cursor(pymysql.cursors.DictCursor)
+        result = []
+        sql = "SELECT * FROM `group` WHERE id = {}".format(id)
+        cursor.execute(sql)
+        if (cursor.rowcount != 0):
+            row = cursor.fetchone()
             result.append({
                 'id': row['id'],
                 'name': row['name'],
@@ -53,35 +71,35 @@ class DatabaseWrapper:
         cursor.close()
         return result
 
-    def get_group_by_id(self,id):
-        cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT * FROM `group` WHERE id = {}".format(id)
-        cursor.execute(sql)
-        result = cursor.fetchone()
-        cursor.close()
-        return result
-
     def search_group(self,name):
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
+        result = []
         sql = "SELECT * FROM `group` WHERE `name` = %s"
         cursor.execute(sql,
                         (
                             name
                         )
                     )
-        result = cursor.fetchone()
+        if (cursor.rowcount != 0):
+            row = cursor.fetchone()
+            result.append({
+                'id': row['id'],
+                'name': row['name'],
+                'status': row['status'],
+                'created_at': row['created_at'],
+                'last_update': row['last_update']
+            })
         cursor.close()
         return result
 
     def delete_group(self, id):
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "DELETE FROM `group` WHERE `id` = %s"
+        sql = "UPDATE `group` SET `status` = 0 WHERE `id` = %s"
         cursor.execute(sql,
                         (
                             id
                         )
                     )
-        cursor.close()
         self.connection.commit()
 
     def get_all_schedule(self):
@@ -89,15 +107,16 @@ class DatabaseWrapper:
         result = []
         sql = "SELECT * FROM group_schedule"
         cursor.execute(sql)
-        for row in cursor.fetchall():
-            result.append({
-                'id': row['id'],
-                'id_group': row['id_group'],
-                'id_user' : row['id_user'],
-                'date': row['date'],
-                'start_time': row['start_time'],
-                'end_time': row['end_time']
-            })
+        if (cursor.rowcount != 0):
+            for row in cursor.fetchall():
+                result.append({
+                    'id': row['id'],
+                    'id_group': row['id_group'],
+                    'id_user' : row['id_user'],
+                    'date': row['date'],
+                    'start_time': row['start_time'],
+                    'end_time': row['end_time']
+                })
         cursor.close()
         return result
 
@@ -106,15 +125,16 @@ class DatabaseWrapper:
         result = []
         sql = "SELECT * FROM group_schedule WHERE id_user = {}".format(id)
         cursor.execute(sql)
-        for row in cursor.fetchall():
-            result.append({
-                'id': row['id'],
-                'id_group': row['id_group'],
-                'id_user' : row['id_user'],
-                'date': row['date'],
-                'start_time': row['start_time'],
-                'end_time': row['end_time']
-            })
+        if (cursor.rowcount != 0):
+            for row in cursor.fetchall():
+                result.append({
+                    'id': row['id'],
+                    'id_group': row['id_group'],
+                    'id_user' : row['id_user'],
+                    'date': row['date'],
+                    'start_time': row['start_time'],
+                    'end_time': row['end_time']
+                })
         cursor.close()
         return result
 
@@ -123,7 +143,26 @@ class DatabaseWrapper:
         result = []
         sql = "SELECT * FROM group_schedule WHERE id_group = {}".format(id)
         cursor.execute(sql)
-        for row in cursor.fetchall():
+        if (cursor.rowcount != 0):
+            for row in cursor.fetchall():
+                result.append({
+                    'id': row['id'],
+                    'id_group': row['id_group'],
+                    'id_user' : row['id_user'],
+                    'date': row['date'],
+                    'start_time': row['start_time'],
+                    'end_time': row['end_time']
+                })
+        cursor.close()
+        return result
+    
+    def get_schedule_by_id(self, id):
+        cursor = self.connection.cursor(pymysql.cursors.DictCursor)
+        result = []
+        sql = "SELECT * FROM group_schedule WHERE id = {}".format(id)
+        cursor.execute(sql)
+        if (cursor.rowcount != 0):
+            row = cursor.fetchone()
             result.append({
                 'id': row['id'],
                 'id_group': row['id_group'],
@@ -132,14 +171,6 @@ class DatabaseWrapper:
                 'start_time': row['start_time'],
                 'end_time': row['end_time']
             })
-        cursor.close()
-        return result
-    
-    def get_schedule_by_id(self, id):
-        cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "SELECT * FROM group_schedule WHERE id = {}".format(id)
-        cursor.execute(sql)
-        result = cursor.fetchone()
         cursor.close()
         return result
 
@@ -194,7 +225,7 @@ class DatabaseWrapper:
 
     def remove_group_member(self, id):
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "UPDATE `group_member` SET `status`= 0 WHERE 1 id = %s"
+        sql = "UPDATE `group_member` SET `status`= 0 WHERE id = %s"
         cursor.execute(sql,
                         (
                             id
@@ -208,12 +239,13 @@ class DatabaseWrapper:
         result = []
         sql = "SELECT * FROM `group_member` WHERE `id_group` = {}".format(id_group)
         cursor.execute(sql)
-        for row in cursor.fetchall():
-            result.append({
-                'id': row['id'],
-                'id_group': row['id_group'],
-                'id_user' : row['id_user']
-            })
+        if (cursor.rowcount != 0):
+            for row in cursor.fetchall():
+                result.append({
+                    'id': row['id'],
+                    'id_group': row['id_group'],
+                    'id_user' : row['id_user']
+                })
         cursor.close()
         return result
 
@@ -232,7 +264,7 @@ class Database(DependencyProvider):
 
     def __init__(self):
         print("DB Dependency Constructor")
-        config={'host':'localhost', 'user':'root', 'password':'', 'database':'proyeksoa', 'autocommit':True}
+        config={'host':'127.0.0.1', 'user':'root', 'password':'', 'database':'proyeksoa', 'autocommit':True}
         self.connection_pool = pymysqlpool.ConnectionPool(size=5, name='DB Pool', **config)
     
     def get_dependency(self, worker_ctx):

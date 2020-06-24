@@ -10,3 +10,8 @@ class GroupSchema(Schema):
     start_time = fields.Str(required=True)
     end_time =  fields.Str(required=True)
     name = fields.Str(required=True)
+
+class ResultSchema(Schema):
+    status = fields.Int(required=True)
+    msg = fields.Str(required=True)
+    data = fields.List(fields.Nested(GroupSchema))
