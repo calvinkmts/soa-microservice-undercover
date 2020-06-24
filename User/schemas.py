@@ -18,3 +18,7 @@ class UserWordPacksSchema(Schema):
     id_word_pack = fields.Int(required=True)
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
+
+class CommandResultSchema(Schema):
+    err = fields.Int(required=True)
+    msg = fields.Str(required=True)

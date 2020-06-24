@@ -29,7 +29,7 @@ class DatabaseWrapper:
                     )
         self.connection.commit()
 
-    def update_user(self, id, data):
+    def update_user(self, data):
         tanda=1
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
         sql = "UPDATE users SET "
@@ -148,7 +148,7 @@ class DatabaseWrapper:
                     )
         self.connection.commit()
 
-    def update_user_wordpack(self, id, data):
+    def update_user_wordpack(self, data):
         tanda=1
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
         sql = "UPDATE user_word_packs SET "

@@ -1,12 +1,12 @@
-from nameko.rpc import rpc
+from nameko.rpc import rpc, RpcProxy
 
 import dependencies, schemas
 
 class UserService:
     name = 'user_service'
     database = dependencies.Database()
-    voucher_rpc = RpcProxy('voucher_service')
-    user_rpc = RpcProxy('user_service')
+    # voucher_rpc = RpcProxy('voucher_service')
+    # user_rpc = RpcProxy('user_service')
     # transaction_rpc = RpcProxy('transaction_service')
 
     def __init__(self):
@@ -19,10 +19,24 @@ class UserService:
         return "New User Created"
 
     @rpc
-    def update_user(self, id, data):
-        self.database.update_user(id, data)
-        self.database.close_connection()
-        return "User Updated"
+    def update_user(self, data):
+
+        result = {
+            'err': 0,
+            'msg': 'User Updated'
+        }
+
+        if self.database.get_user_by_id(data['id']):
+            self.database.update_user(data)
+            
+            self.database.close_connection()
+
+        else:
+            result['err'] = 1
+            result['msg'] = 'User Not Found'
+            self.database.close_connection()
+
+        return schemas.CommandResultSchema().dumps(result)
 
     @rpc
     def get_all_user(self):
@@ -48,10 +62,24 @@ class UserService:
         return "New User Wordpack Created"
 
     @rpc
-    def update_user_wordpack(self, id, data):
-        self.database.update_user_wordpack(id, data)
-        self.database.close_connection()
-        return "User Wordpack Updated"
+    def update_user_wordpack(self, data):
+        
+        result = {
+            'err': 0,
+            'msg': 'User Wordpack Updated'
+        }
+
+        if self.database.get_user_wordpack_by_id(data['id']):
+            self.database.update_user_wordpack(data)
+            
+            self.database.close_connection()
+
+        else:
+            result['err'] = 1
+            result['msg'] = 'User Wordpack Not Found'
+            self.database.close_connection()
+
+        return schemas.CommandResultSchema().dumps(result)
 
     @rpc
     def get_all_user_wordpack(self):
