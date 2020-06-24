@@ -5,6 +5,9 @@ import dependencies, schemas
 class UserService:
     name = 'user_service'
     database = dependencies.Database()
+    voucher_rpc = RpcProxy('voucher_service')
+    user_rpc = RpcProxy('user_service')
+    # transaction_rpc = RpcProxy('transaction_service')
 
     def __init__(self):
         print("Service Constructor")

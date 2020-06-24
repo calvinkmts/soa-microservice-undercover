@@ -13,7 +13,7 @@ class DatabaseWrapper:
     
     def create_user(self, data):
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "INSERT INTO users VALUES(default, %s, %s, %s, %s, %s,'CREATED', %s, %s)"
+        sql = "INSERT INTO users VALUES(default, %s, %s, %s, %s, %s,'CREATED', %s, %s, %s)"
         cursor.execute( sql, 
                         (
                             data['email'], 
@@ -24,26 +24,80 @@ class DatabaseWrapper:
                             data['status'],
                             data['created_at'],
                             data['updated_at'],
+                            data['balance']
                         )
                     )
         self.connection.commit()
 
     def update_user(self, id, data):
+        tanda=1
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "UPDATE users SET email = %s, password = %s, name = %s, gender = %s, dob = %s, status = %s, created_at = %s, updated_at = %s WHERE id = %s"
-        cursor.execute( sql, 
-                        (
-                            data['email'], 
-                            data['password'], 
-                            data['name'],
-                            data['gender'],
-                            data['dob'],
-                            data['status'],
-                            data['created_at'],
-                            data['updated_at'],
-                            id
-                        )
-                    )
+        sql = "UPDATE users SET "
+        if('email' in data):
+            if(not tanda):
+                sql+= ","
+            else:
+                tanda=0
+                sql+= "email = " + str(data['email'])
+        if('password' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "password = " + str(data['password'])
+            else:
+                tanda=0
+                sql+= "password = " + str(data['password'])
+        if('name' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "name = " + str(data['name'])
+            else:
+                tanda=0
+                sql+= "name = " + str(data['name'])
+        if('gender' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "gender = " + str(data['gender'])
+            else:
+                tanda=0
+                sql+= "gender = " + str(data['gender'])
+        if('dob' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "dob = " + str(data['dob'])
+            else:
+                tanda=0
+                sql+= "dob = " + str(data['dob'])
+        if('status' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "status = " + str(data['status'])
+            else:
+                tanda=0
+                sql+= "status = " + str(data['status'])
+        if('created_at' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "created_at = " + str(data['created_at'])
+            else:
+                tanda=0
+                sql+= "created_at = " + str(data['created_at'])
+        if('updated_at' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "updated_at = " + str(data['updated_at'])
+            else:
+                tanda=0
+                sql+= "updated_at = " + str(data['updated_at'])
+        if('balance' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "balance = " + str(data['balance'])
+            else:
+                tanda=0
+                sql+= "balance = " + str(data['balance'])
+        
+        sql+= " WHERE id = " + str(data['id'])
+        cursor.execute(sql)
         self.connection.commit()
 
     def get_all_user(self):
@@ -95,17 +149,38 @@ class DatabaseWrapper:
         self.connection.commit()
 
     def update_user_wordpack(self, id, data):
+        tanda=1
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
-        sql = "UPDATE user_word_packs SET id_user = %s, id_word_pack = %s, created_at = %s, updated_at = %s WHERE id = %s"
-        cursor.execute( sql, 
-                        (
-                            data['id_user'], 
-                            data['id_word_pack'], 
-                            data['created_at'],
-                            data['updated_at'],
-                            id
-                        )
-                    )
+        sql = "UPDATE user_word_packs SET "
+        if('id_user' in data):
+            if(not tanda):
+                sql+= ","
+            else:
+                tanda=0
+                sql+= "id_user = " + str(data['id_user'])
+        if('id_word_pack' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "id_word_pack = " + str(data['id_word_pack'])
+            else:
+                tanda=0
+                sql+= "id_word_pack = " + str(data['id_word_pack'])
+        if('created_at' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "created_at = " + str(data['created_at'])
+            else:
+                tanda=0
+                sql+= "created_at = " + str(data['created_at'])
+        if('updated_at' in data):
+            if(not tanda):
+                sql+= ","
+                sql+= "updated_at = " + str(data['updated_at'])
+            else:
+                tanda=0
+                sql+= "updated_at = " + str(data['updated_at'])
+        sql+= " WHERE id = " + str(data['id'])
+        cursor.execute(sql)
         self.connection.commit()
 
     def get_all_user_wordpack(self):

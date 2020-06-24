@@ -10,6 +10,7 @@ class UsersSchema(Schema):
     status = fields.Str(required=True)
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
+    balance = fields.Int()
 
 class UserWordPacksSchema(Schema):
     id = fields.Int(required=True)
