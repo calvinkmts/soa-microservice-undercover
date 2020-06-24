@@ -19,6 +19,15 @@ class UserService:
         return "New User Created"
 
     @rpc
+    def login(self, data):
+        user = self.database.login(data)
+        self.database.close_connection()
+        if user:
+            return "User berhasil login"
+        else:
+            return "Email / password salah atau tidak ada"
+
+    @rpc
     def update_user(self, data):
 
         result = {

@@ -11,6 +11,19 @@ class DatabaseWrapper:
         print("DB Wrapper Constructor")
         self.connection = connection
     
+    def login(self, data):
+        cursor = self.connection.cursor(pymysql.cursors.DictCursor)
+        sql = "SELECT * from USERS WHERE email = %s AND password = %s"
+        cursor.execute( sql,
+                        (
+                            data['email'],
+                            data['password']
+                        )
+        )
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+
     def create_user(self, data):
         cursor = self.connection.cursor(pymysql.cursors.DictCursor)
         sql = "INSERT INTO users VALUES(default, %s, %s, %s, %s, %s,'CREATED', %s, %s, %s)"
@@ -21,10 +34,9 @@ class DatabaseWrapper:
                             data['name'],
                             data['gender'],
                             data['dob'],
-                            data['status'],
                             data['created_at'],
                             data['updated_at'],
-                            data['balance']
+                            data['balance'],
                         )
                     )
         self.connection.commit()
@@ -38,56 +50,56 @@ class DatabaseWrapper:
                 sql+= ","
             else:
                 tanda=0
-                sql+= "email = " + str(data['email'])
+                sql+= "email = " + "'" + str(data['email']) + "'" 
         if('password' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "password = " + str(data['password'])
+                sql+= "password = " + "'" + str(data['password']) + "'" 
             else:
                 tanda=0
-                sql+= "password = " + str(data['password'])
+                sql+= "password = " + "'" + str(data['password']) + "'" 
         if('name' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "name = " + str(data['name'])
+                sql+= "name = " + "'" + str(data['name']) + "'" 
             else:
                 tanda=0
-                sql+= "name = " + str(data['name'])
+                sql+= "name = " + "'" + str(data['name']) + "'" 
         if('gender' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "gender = " + str(data['gender'])
+                sql+= "gender = " + "'" + str(data['gender']) + "'" 
             else:
                 tanda=0
-                sql+= "gender = " + str(data['gender'])
+                sql+= "gender = " + "'" + str(data['gender']) + "'" 
         if('dob' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "dob = " + str(data['dob'])
+                sql+= "dob = " + "'" + str(data['dob']) + "'" 
             else:
                 tanda=0
-                sql+= "dob = " + str(data['dob'])
+                sql+= "dob = " + "'" + str(data['dob']) + "'" 
         if('status' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "status = " + str(data['status'])
+                sql+= "status = " + "'" + str(data['status']) + "'" 
             else:
                 tanda=0
-                sql+= "status = " + str(data['status'])
+                sql+= "status = " + "'" + str(data['status']) + "'" 
         if('created_at' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "created_at = " + str(data['created_at'])
+                sql+= "created_at = " + "'" + str(data['created_at']) + "'" 
             else:
                 tanda=0
-                sql+= "created_at = " + str(data['created_at'])
+                sql+= "created_at = " + "'" + str(data['created_at']) + "'" 
         if('updated_at' in data):
             if(not tanda):
                 sql+= ","
-                sql+= "updated_at = " + str(data['updated_at'])
+                sql+= "updated_at = " + "'" + str(data['updated_at']) + "'" 
             else:
                 tanda=0
-                sql+= "updated_at = " + str(data['updated_at'])
+                sql+= "updated_at = " + "'" + str(data['updated_at']) + "'" 
         if('balance' in data):
             if(not tanda):
                 sql+= ","
@@ -98,6 +110,8 @@ class DatabaseWrapper:
         
         sql+= " WHERE id = " + str(data['id'])
         cursor.execute(sql)
+        print(sql)
+        cursor.close()
         self.connection.commit()
 
     def get_all_user(self):

@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.8.5
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 23, 2020 at 01:56 PM
--- Server version: 10.1.40-MariaDB
--- PHP Version: 7.3.5
+-- Generation Time: Jun 24, 2020 at 02:54 PM
+-- Server version: 10.4.11-MariaDB
+-- PHP Version: 7.4.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -192,7 +191,6 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `email`, `password`, `name`, `gender`, `dob`, `status`, `created_at`, `updated_at`, `balance`) VALUES
-(1, 'k.koesoemo@ymail.com', '1234', 'kevin', 'M', '2020-01-01', 'CREATED', '2020-12-31 09:00:00', '2020-12-31 09:00:00', 1000),
 (2, 'devphil@yahoo.ca', '6b75789a3c2415f290139923f8fbc0f2', 'Alexandra Lutz', 'F', '2002-10-05', 'ACTIVE', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
 (3, 'barnett@me.com', 'c3faad0e29c54860c92cf1ec20f4fdbf', 'Leonidas Hughes', 'F', '1982-07-23', 'ACTIVE', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
 (4, 'shaffei@mac.com', '457e05ded2ce000f8819a281a16f1f8d', 'Marquis Marks', 'M', '1994-09-24', 'ACTIVE', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
@@ -201,7 +199,9 @@ INSERT INTO `users` (`id`, `email`, `password`, `name`, `gender`, `dob`, `status
 (7, 'milton@hotmail.com', 'c0c9151335f96f90667ef358d0b7af57', 'Mattie Fields', 'F', '2007-06-04', 'CREATED', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
 (8, 'debest@live.com', '6eb8a30ea9720627ccf5af22efd541f8', 'Celeste Parsons', 'M', '1957-04-22', 'CREATED', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
 (9, 'gknauss@outlook.com', '4bebd505c66aca1a4432715c74451b53', 'Jamar Armstrong', 'M', '2009-04-05', 'ACTIVE', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
-(10, 'fglock@icloud.com', '0cbdcd9b8edc83e3cfc790f8ef9dc98b', 'Nelson Bolton', 'M', '1951-05-31', 'ACTIVE', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0);
+(10, 'fglock@icloud.com', '0cbdcd9b8edc83e3cfc790f8ef9dc98b', 'Nelson Bolton', 'M', '1951-05-31', 'ACTIVE', '2017-12-31 09:00:00', '2017-12-31 09:00:00', 0),
+(11, 'eric13@gmail.com', 'ericeric', 'eboi', 'M', '1998-12-13', 'CREATED', '2020-12-31 09:00:00', '2020-12-31 09:00:00', 1000),
+(12, 'erictirtana13@gmail.com', 'ericeric', 'Eric Tirtana', 'M', '1998-12-13', 'CREATED', '2020-12-31 09:00:00', '2020-12-31 09:00:00', 1000);
 
 -- --------------------------------------------------------
 
@@ -231,7 +231,10 @@ INSERT INTO `user_word_packs` (`id`, `id_user`, `id_word_pack`, `created_at`, `u
 (8, 51, 130, '2017-12-31 09:00:00', '2017-12-31 09:00:00'),
 (9, 97, 153, '2017-12-31 09:00:00', '2017-12-31 09:00:00'),
 (10, 172, 51, '2017-12-31 09:00:00', '2017-12-31 09:00:00'),
-(0, 1, 70, '2019-12-31 09:00:00', '2019-12-31 11:00:00');
+(11, 1, 70, '2019-12-31 09:00:00', '2019-12-31 11:00:00'),
+(12, 11, 2, '2020-12-31 09:00:00', '2020-12-31 09:00:00'),
+(22, 11, 2, '2020-12-31 09:00:00', '2020-12-31 09:00:00'),
+(23, 172, 3, '2020-12-31 09:00:00', '2020-12-31 09:00:00');
 
 -- --------------------------------------------------------
 
@@ -264,6 +267,38 @@ CREATE TABLE `word_pairs` (
   `created_at` timestamp NULL DEFAULT NULL,
   `updated_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `user_word_packs`
+--
+ALTER TABLE `user_word_packs`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `user_word_packs`
+--
+ALTER TABLE `user_word_packs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
