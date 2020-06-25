@@ -36,7 +36,7 @@ class DatabaseWrapper:
 
     def get_all_round(self):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM game_round"
+        sql = "SELECT * FROM game_round WHERE status = 1"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
@@ -74,7 +74,7 @@ class DatabaseWrapper:
 
     def get_all_round_detail(self):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM round_detail"
+        sql = "SELECT * FROM round_detail WHERE status = 1"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
@@ -112,7 +112,7 @@ class DatabaseWrapper:
 
     def get_all_turn_detail(self):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM turn_detail"
+        sql = "SELECT * FROM turn_detail WHERE status = 1"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
