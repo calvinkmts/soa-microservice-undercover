@@ -125,9 +125,9 @@ class DatabaseWrapper:
         for row in cursor.fetchall():
             result.append({
                 'id': row['id'],
-                'id_game': row['created_at'],
-                'id_member': row['status'],
-                'status': row['id_gamemaster']
+                'id_game': row['id_game'],
+                'id_member': row['id_member'],
+                'status': row['status']
             })
         cursor.close()
         return result
@@ -148,9 +148,9 @@ class DatabaseWrapper:
         for row in cursor.fetchall():
             result.append({
                 'id': row['id'],
-                'id_game': row['created_at'],
-                'id_member': row['status'],
-                'status': row['id_gamemaster']
+                'id_game': row['id_game'],
+                'id_member': row['id_member'],
+                'status': row['status']
             })
         cursor.close()
         return result
