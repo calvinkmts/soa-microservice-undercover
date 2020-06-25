@@ -18,10 +18,9 @@ class GameService:
     def create_game(self, data):
         result = {
             'err': 0,
-            'msg': 'Game Wordpack Added'
+            'msg': 'Game Created'
         }
         self.database.create_game(data)
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -35,7 +34,6 @@ class GameService:
         else:
             result['err'] = 1
             result['msg'] = 'Game Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -49,25 +47,21 @@ class GameService:
         else:
             result['err'] = 1
             result['msg'] = 'Game Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
     def get_all_game(self):
         result = self.database.get_all_game()
-        self.database.close_connection()
         return schemas.GameSchema(many=True).dump(result)
 
     @rpc
     def get_game_by_id(self, data):
         result = self.database.get_game_by_id(data['id'])
-        self.database.close_connection()
         return schemas.GameSchema().dump(result)
     
     @rpc
     def get_game_by_schedule_id(self, data):
         result = self.database.get_game_by_schedule_id(data['id'])
-        self.database.close_connection()
         return schemas.GameSchema().dump(result)
         
     ### GAME MEMBER ###
@@ -77,13 +71,12 @@ class GameService:
             'err': 0,
             'msg': 'Game Member Added'
         }
-        if self.user_rpc.get_member_by_id(data['id']):
+        if self.user_rpc.get_user_by_id(data['id_member']):
             self.database.add_game_member(data)
             self.database.close_connection()
         else:
             result['err'] = 1
             result['msg'] = 'User Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -97,7 +90,6 @@ class GameService:
         else:
             result['err'] = 1
             result['msg'] = 'Game Member Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -111,25 +103,21 @@ class GameService:
         else:
             result['err'] = 1
             result['msg'] = 'Game Member Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
     def get_all_game_member(self):
         result = self.database.get_all_game_member()
-        self.database.close_connection()
         return schemas.GameMemberSchema(many=True).dump(result)
 
     @rpc
     def get_game_member_by_id(self, data):
         result = self.database.get_game_by_id(data['id'])
-        self.database.close_connection()
         return schemas.GameMemberSchema().dump(result)
 
     @rpc
     def get_game_member_by_game_id(self, data):
         result = self.database.get_game_member_by_game_id(data['id'])
-        self.database.close_connection()
         return schemas.GameMemberSchema(many=True).dump(result)
     
     ### GAME WORD PACK ###
@@ -140,7 +128,6 @@ class GameService:
             'msg': 'Game Wordpack Added'
         }
         self.database.create_game_wordpack(data)
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -154,7 +141,6 @@ class GameService:
         else:
             result['err'] = 1
             result['msg'] = 'Game Wordpack Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -168,25 +154,21 @@ class GameService:
         else:
             result['err'] = 1
             result['msg'] = 'Game Wordpack Not Found'
-        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
     def get_all_game_wordpack(self):
         result = self.database.get_all_game_wordpack()
-        self.database.close_connection()
         return schemas.GameWordpackSchema(many=True).dump(result)
 
     @rpc
     def get_game_wordpack_by_id(self, data):
         result = self.database.get_game_wordpack_by_id(data['id'])
-        self.database.close_connection()
         return schemas.GameWordpackSchema().dump(result)
 
     @rpc
     def get_game_wordpack_by_game_id(self, data):
         result = self.database.get_game_wordpack_by_game_id(data['id'])
-        self.database.close_connection()
         return schemas.GameWordpackSchema(many=True).dump(result)
         
     def __del__(self):
