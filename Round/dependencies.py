@@ -8,11 +8,21 @@ class DatabaseWrapper:
 
     connection = None
 
-    ## GAME ROUND ##
-
     def __init__(self, connection):
         print("DB Wrapper Constructor")
         self.connection = connection
+
+    def mrwhite_guess(self, data):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "SELECT * FROM turn_detail "
+        sql += " JOIN round_detail ON turn_detail.id_round_detail = round_detail.id "
+        sql += " JOIN game_round ON round_detail.id_round = game_round.id "
+        sql += " WHERE word_1 = '" + data['user_word'] + "'"
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+
+    ## GAME ROUND ##
 
     def create_round(self, id_game, round, word1, word2, num_mr_white, num_civilian, num_undercover):
         cursor = self.connection.cursor(dictionary=True)

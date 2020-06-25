@@ -13,6 +13,15 @@ class RoundService:
     def __init__(self):
         print("Service Constructor")
 
+    @rpc
+    def mrwhite_guess(self, data):
+        win = self.database.mrwhite_guess(data)
+        self.database.close_connection()
+        if win:
+            return "Mr. White's guess is right!"
+        else:
+            return "Try again next time!"
+
     ### GAME ROUND ###
     @rpc
     def create_round(self, id_game, round, word1, word2, num_mr_white, num_civilian, num_undercover):
@@ -57,7 +66,7 @@ class RoundService:
     @rpc
     def get_round_by_id(self, id):
         result = self.database.get_round_by_id(id)
-        return schemas.GameSchema().dump(result)
+        return schemas.RoundSchema().dump(result)
 
     ### ROUND DETAIL ###
     @rpc
