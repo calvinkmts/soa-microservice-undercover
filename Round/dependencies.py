@@ -14,22 +14,12 @@ class DatabaseWrapper:
 
     ## UTILITY ##
 
-    def check_win(self, data):
-        cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM round_detail "
-        sql += " JOIN game_round ON round_detail.id_round = game_round.id "
-        sql += " WHERE game_round.word_1 = %s AND game_round.id = %s"
-        cursor.execute(sql, (data['word1'], data['id']))
-        result = cursor.fetchone()
-        cursor.close()
-        return result
-
     def mrwhite_guess(self, data):
         cursor = self.connection.cursor(dictionary=True)
         sql = "SELECT * FROM turn_detail "
         sql += " JOIN round_detail ON turn_detail.id_round_detail = round_detail.id "
         sql += " JOIN game_round ON round_detail.id_round = game_round.id "
-        sql += " WHERE game_round.id = %s AND word1 = %s"
+        sql += " WHERE game_round.id = %s AND game_round.word1 = %s"
         cursor.execute(sql, (data['id'], data['word1']))
         result = cursor.fetchone()
         cursor.close()
