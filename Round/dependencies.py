@@ -49,9 +49,20 @@ class DatabaseWrapper:
 
     def get_all_round(self):
         cursor = self.connection.cursor(dictionary=True)
+        result = []
         sql = "SELECT * FROM game_round"
         cursor.execute(sql)
-        result = cursor.fetchone()
+        for row in cursor.fetchall():
+            result.append({
+                'id': row['id'],
+                'id_game': row['id_game'],
+                'round': row['round'],
+                'word1': row['word1'],
+                'word2': row['word2'],
+                'num_mr_white': row['num_mr_white'],
+                'num_civilian': row['num_civilian'],
+                'num_undercover': row['num_undercover']
+            })
         cursor.close()
         return result
 
@@ -87,9 +98,17 @@ class DatabaseWrapper:
 
     def get_all_round_detail(self):
         cursor = self.connection.cursor(dictionary=True)
+        result = []
         sql = "SELECT * FROM round_detail"
         cursor.execute(sql)
-        result = cursor.fetchone()
+        for row in cursor.fetchall():
+            result.append({
+                'id': row['id'],
+                'id_round': row['id_round'],
+                'id_user': row['id_user'],
+                'id_role': row['id_role'],
+                'condition': row['condition']
+            })
         cursor.close()
         return result
 
@@ -111,9 +130,17 @@ class DatabaseWrapper:
 
     def get_all_alive_player(self, data):
         cursor = self.connection.cursor(dictionary=True)
+        result = []
         sql = "SELECT * FROM round_detail WHERE condition = 'ALIVE' AND id_round = {}".format(data['id_round'])
         cursor.execute(sql)
-        result = cursor.fetchone()
+        for row in cursor.fetchall():
+            result.append({
+                'id': row['id'],
+                'id_round': row['id_round'],
+                'id_user': row['id_user'],
+                'id_role': row['id_role'],
+                'condition': row['condition']
+            })
         cursor.close()
         return result
 
@@ -176,10 +203,20 @@ class DatabaseWrapper:
         self.connection.commit()
 
     def get_all_turn_detail(self):
+        result = []
         cursor = self.connection.cursor(dictionary=True)
         sql = "SELECT * FROM turn_detail"
         cursor.execute(sql)
-        result = cursor.fetchone()
+        for row in cursor.fetchall():
+            result.append({
+                'id': row['id'],
+                'id_round_detail': row['id_round_detail'],
+                'turn': row['turn'],
+                'user_word': row['user_word'],
+                'user_desc': row['user_desc'],
+                'user_vote': row['user_vote'],
+                'status': row['status']
+            })
         cursor.close()
         return result
 
