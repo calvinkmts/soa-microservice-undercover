@@ -48,17 +48,73 @@ class DatabaseWrapper:
         cursor.close()
         return result
 
-    def get_word1(self, id):
+    def create_round_detail(self, id_round, id_user, id_role, condition):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT word1 FROM game_round WHERE id = {}".format(id)
+        sql = "INSERT INTO round_detail VALUES(default, %s, %s, %s, %s, 1)"
+        cursor.execute( sql, (id_round, id_user, id_role, condition))
+        self.connection.commit()
+
+    def update_round_detail(self, id, id_user, condition):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE round_detail SET condition = %s WHERE id = %s AND id_user = %s"
+        cursor.execute( sql, (condition, id, id_user))
+        cursor.close()
+        self.connection.commit()
+
+    def delete_round_detail(self, id):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE round_detail SET status = 0 WHERE id = {}".format(id)
+        cursor.execute(sql)
+        cursor.close()
+        self.connection.commit()
+    
+    def get_all_round_detail(self):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "SELECT * FROM round_detail"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
         return result
 
-    def get_word2(self, id):
+    def get_round_detail_by_id(self, id):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT word2 FROM game_round WHERE id = {}".format(id)
+        sql = "SELECT * FROM round_detail WHERE id = {}".format(id)
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+    
+    def create_turn_detail(self, id_round_detail, turn, user_word, user_desc):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "INSERT INTO turn_detail VALUES(default, %s, %s, %s, %s, 1)"
+        cursor.execute( sql, (id_round_detail, turn, user_word, user_desc))
+        self.connection.commit()
+
+    def update_turn_detail(self, id, id_round_detail, turn, user_word, user_desc):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE turn_detail SET turn = %s, user_word = %s, user_desc = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (turn, user_word, user_desc, id, id_round_detail))
+        cursor.close()
+        self.connection.commit()
+
+    def delete_turn_detail(self, id):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE turn_detail SET status = 0 WHERE id = {}".format(id)
+        cursor.execute(sql)
+        cursor.close()
+        self.connection.commit()
+    
+    def get_all_turn_detail(self):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "SELECT * FROM turn_detail"
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+
+    def get_turn_detail_by_id(self, id):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "SELECT * FROM turn_detail WHERE id = {}".format(id)
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
