@@ -14,7 +14,7 @@ class TransactionService:
     # ==========================================================
 
     database = dependencies.Database()
-    wordpack_rpc = RpcProxy('word_pack')
+    word_rpc = RpcProxy('word_service')
     user_rpc = RpcProxy('user_service')
     transaction_rpc = RpcProxy('transaction_service')
 
@@ -48,77 +48,30 @@ class TransactionService:
     
     @rpc
     def create_transaction(self, data):
-
         result = {
             'err': 0,
             'msg': 'Transaction Created'
         }
-        
-        
-        # update user balance
-            # function
-        final = 0
-        tmp = self.wordpack_rpc.get_wordPack_by_id(data['id_word_pack'])
-        tmp1 = self.user_rpc.get_user_by_id(data['id_user'])
-        saldo = 0
-        harga = 0
-        end = saldo - harga
-        if self.user_rpc.get_user_by_id(data['id_user']): #cek ada ga usernya
-            if self.wordpack_rpc.get_wordPack_by_id(data['id_word_pack']): #cek ada ga wordpacknya
-                cek = self.wordpack_rpc.get_wordPack_by_id(data['id_word_pack'])
-                he = cek['status']
-                if he == 'ACTIVE':
-                    tmp = self.wordpack_rpc.get_wordPack_by_id(data['id_word_pack'])
-                    harga = tmp['price']
-
-                    tmp1 = self.user_rpc.get_user_by_id(data['id_user'])
-                    saldo = tmp1['balance']
-
-                    if saldo >= harga:
-                        
-                        print(harga)
-                        final = 1
-                        # self.database.close_connection()
-
-                        uakhir = saldo - harga
-                        self.user_rpc.update_user({"id": data['id_user'],"balance": uakhir})
-
-                        result['err'] = 0
-                        result['msg'] = "Transaction Created"
-                        self.database.close_connection()
-
-                    else:
-                        
-                        result['err'] = 1
-                        result['msg'] = 'Balance Not Enough'
-                        self.database.close_connection()
+        user = self.user_rpc.get_user_by_id(data['id_user'])
+        if user:
+            wordpack = self.word_rpc.get_wordpack_by_id(data['id_word_pack'])
+            if wordpack:
+                new_balance = user['balance'] - wordpack['price']
+                if new_balance >= 0:
+                    data['amount'] = wordpack['price']
+                    self.database.create_transaction(data)
+                    self.user_rpc.create_user_wordpack({'id_user': data['id_user'], 'id_word_pack': data['id_word_pack'], 'created_at': None, 'updated_at': None})
+                    self.user_rpc.update_user({'id': user['id_user'], 'balance': new_balance})
                 else:
                     result['err'] = 1
-                    result['msg'] = 'Wordpack Not Active'
-                    self.database.close_connection()
+                    result['msg'] = 'Balance Not Enough'
             else:
                 result['err'] = 1
                 result['msg'] = 'Wordpack Not Found'
-                self.database.close_connection()
         else:
             result['err'] = 1
             result['msg'] = 'User Not Found'
-            self.database.close_connection()
-
-
-        # self.database.create_transaction({"id_user": data['id_user'], "id_word_pack": data['id_word_pack'], "type": 'PURCHASED', "amount": tmp['price'], "code": 'None', "created_at": dt_string,"updated_at": dt_string })
-       # self.database.create_transaction(data)
-
-        # add user wordpack
-            # function
-        x = datetime.now()
-        inputTgl = x.strftime("%Y-%m-%d %H:%M:%S")
-        if final==1:
-            self.database.create_transaction({"id_user": data['id_user'], "id_word_pack": data['id_word_pack'],"amount": tmp['price']})
-            self.user_rpc.create_user_wordpack({"id_user": data['id_user'],"id_word_pack": data['id_word_pack'],"created_at": inputTgl,"updated_at":inputTgl})
-
         self.database.close_connection()
-        
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
@@ -237,10 +190,10 @@ class TransactionService:
 
     @rpc
     def redeem_voucher(self,data):
-
+        
         result = {
             'err': 0,
-            'msg': ''
+            'msg': 'Voucher Redeemed'
         }
 
 
@@ -261,8 +214,12 @@ class TransactionService:
                     if statusvoc:
                         self.user_rpc.update_user({"id": data['redeemed_by'],"balance": uakhir})
                         self.database.redeem_voucher(data)
+                        now = datetime.now()
+                        dt_string=now.strftime("%Y-%m-%d %H:%M:%S")
+                        print(dt_string)
                         result['err'] = 0
                         result['msg'] = 'Voucher Redeemed by' + " " + tmp['name']
+                        self.transaction_rpc.create_transaction({"id_user": data['redeemed_by'], "id_word_pack": 0, "type": 'REDEEM', "amount": topup, "code": data['code'], "created_at": dt_string,"updated_at": dt_string })
                     else:
                         result['err'] = 0
                         result['msg'] = 'Voucher Cant be Redeemed'
