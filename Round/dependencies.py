@@ -12,6 +12,8 @@ class DatabaseWrapper:
         print("DB Wrapper Constructor")
         self.connection = connection
 
+    def check_win():
+
     def mrwhite_guess(self, data):
         cursor = self.connection.cursor(dictionary=True)
         sql = "SELECT * FROM turn_detail "
@@ -117,7 +119,7 @@ class DatabaseWrapper:
     def update_turn_detail(self, id, id_round_detail, turn, user_word, user_desc, status):
         cursor = self.connection.cursor(dictionary=True)
         sql = "UPDATE turn_detail SET turn = %s, user_word = %s, user_desc = %s, status = %s WHERE id = %s AND id_round_detail = %s"
-        cursor.execute( sql, (turn, user_word, user_desc, status,  id, id_round_detail))
+        cursor.execute( sql, (turn, user_word, user_desc, status, id, id_round_detail))
         cursor.close()
         self.connection.commit()
 

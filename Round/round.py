@@ -14,6 +14,10 @@ class RoundService:
         print("Service Constructor")
 
     @rpc
+    def check_win(self, data):
+        return 1
+
+    @rpc
     def mrwhite_guess(self, data):
         win = self.database.mrwhite_guess(data)
         self.database.close_connection()
