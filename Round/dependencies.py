@@ -118,7 +118,7 @@ class DatabaseWrapper:
         result = cursor.fetchone()
         cursor.close()
         return result
-    
+
     def get_all_alive_player(self, data):
         cursor = self.connection.cursor(dictionary=True)
         sql = "SELECT * FROM round_detail WHERE condition = 'ALIVE' AND id_round = {}".format(data['id_round'])

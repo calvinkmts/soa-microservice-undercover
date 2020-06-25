@@ -28,35 +28,35 @@ class RoundService:
 
     ### GAME ROUND ###
     @rpc
-    def create_round(self, id_game, round, word1, word2, num_mr_white, num_civilian, num_undercover):
+    def create_round(self, data):
         result = {
             'err': 0,
             'msg': 'Round Created'
         }
-        self.database.create_round(id_game, round, word1, word2, num_mr_white, num_civilian, num_undercover)
+        self.database.create_round(data)
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def update_round(self, id, round, num_mr_white, num_civilian, num_undercover):
+    def update_round(self, data):
         result = {
             'err': 0,
             'msg': 'Round Updated'
         }
-        if self.database.get_round_by_id(id):
-            self.database.update_round(id, round, num_mr_white, num_civilian, num_undercover)
+        if self.database.get_round_by_id(data['id']):
+            self.database.update_round(data)
         else:
             result['err'] = 1
             result['msg'] = 'Round Not Found'
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def delete_round(self, id):
+    def delete_round(self, data):
         result = {
             'err': 0,
             'msg': 'Round Deleted'
         }
-        if self.database.get_round_by_id(id):
-            self.database.delete_round(id)
+        if self.database.get_round_by_id(data['id']):
+            self.database.delete_round(data['id'])
         else:
             result['err'] = 1
             result['msg'] = 'Round Not Found'
@@ -68,52 +68,52 @@ class RoundService:
         return schemas.RoundSchema(many=True).dump(result)
 
     @rpc
-    def get_round_by_id(self, id):
-        result = self.database.get_round_by_id(id)
+    def get_round_by_id(self, data):
+        result = self.database.get_round_by_id(data['id'])
         return schemas.RoundSchema().dump(result)
 
     ### ROUND DETAIL ###
     @rpc
-    def create_round_detail(self, id_round, id_user, id_role, condition):
+    def create_round_detail(self, data):
         result = {
             'err': 0,
             'msg': 'Round Detail Created'
         }
-        if not self.game_rpc.get_round_by_id(id_round):
+        if not self.game_rpc.get_round_by_id(data['id_round']):
             result['err'] = 1
             result['msg'] = 'Round Not Found'
-        elif not self.user_rpc.get_user_by_id(id_user):
+        elif not self.user_rpc.get_user_by_id(data['id_user']):
             result['err'] = 1
             result['msg'] = 'User Not Found'
         else:
-            self.database.create_round_detail(id_round, id_user, id_role, condition)
+            self.database.create_round_detail(data)
             self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def update_round_detail(self, id, id_user, condition):
+    def update_round_detail(self, data):
         result = {
             'err': 0,
             'msg': 'Round Detail Updated'
         }
-        if not self.database.get_round_detail_by_id(id):
+        if not self.database.get_round_detail_by_id(data['id']):
             result['err'] = 1
             result['msg'] = 'Round Detail Not Found'
-        elif not self.user_rpc.get_user_by_id(id_user):
+        elif not self.user_rpc.get_user_by_id(data['id_user']):
             result['err'] = 1
             result['msg'] = 'User Not Found'
         else:
-            self.database.update_round_detail(id, id_user, condition)
+            self.database.update_round_detail(data)
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def delete_round_detail(self, id):
+    def delete_round_detail(self, data):
         result = {
             'err': 0,
             'msg': 'Round Detail Deleted'
         }
-        if self.database.get_round_detail_by_id(id):
-            self.database.delete_round_detail(id)
+        if self.database.get_round_detail_by_id(data['id']):
+            self.database.delete_round_detail(data['id'])
         else:
             result['err'] = 1
             result['msg'] = 'Round Detail Not Found'
@@ -125,41 +125,41 @@ class RoundService:
         return schemas.RoundDetailSchema(many=True).dump(result)
 
     @rpc
-    def get_round_detail_by_id(self, id):
-        result = self.database.get_round_detail_by_id(id)
+    def get_round_detail_by_id(self, data):
+        result = self.database.get_round_detail_by_id(data['id'])
         return schemas.RoundDetailSchema().dump(result)
 
     ### TURN DETAIL ###
     @rpc
-    def create_turn_detail(self, id_round_detail, turn, user_word, user_desc):
+    def create_turn_detail(self, data):
         result = {
             'err': 0,
             'msg': 'Turn Detail Created'
         }
-        self.database.create_turn_detail(id_round_detail, turn, user_word, user_desc)
+        self.database.create_turn_detail(data)
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def update_turn_detail(self, id, id_round_detail, turn, user_word, user_desc):
+    def update_turn_detail(self, data):
         result = {
             'err': 0,
             'msg': 'Turn Detail Updated'
         }
-        if self.database.get_turn_detail_by_id(id):
-            self.database.update_turn_detail(id)
+        if self.database.get_turn_detail_by_id(data['id']):
+            self.database.update_turn_detail(data['id'])
         else:
             result['err'] = 1
             result['msg'] = 'Turn Detail Not Found'
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def delete_turn_detail(self, id):
+    def delete_turn_detail(self, data):
         result = {
             'err': 0,
             'msg': 'Turn Detail Deleted'
         }
-        if self.database.get_turn_detail_by_id(id):
-            self.database.delete_turn_detail(id)
+        if self.database.get_turn_detail_by_id(data['id']):
+            self.database.delete_turn_detail(data['id'])
         else:
             result['err'] = 1
             result['msg'] = 'Turn Detail Not Found'
@@ -171,8 +171,8 @@ class RoundService:
         return schemas.TurnDetailSchema(many=True).dump(result)
 
     @rpc
-    def get_turn_detail_by_id(self, id):
-        result = self.database.get_turn_detail_by_id(id)
+    def get_turn_detail_by_id(self, data):
+        result = self.database.get_turn_detail_by_id(data['id'])
         return schemas.TurnDetailSchema().dump(result)
 
     def __del__(self):
