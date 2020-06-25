@@ -13,22 +13,43 @@ class RoundService:
     def __init__(self):
         print("Service Constructor")
 
-    ### UTILITY ###
+    ## UTILITY ##
+
+    # ID Role 0 = Mr. White
+    # ID Role 1 = Civilian
+    # ID Role 2 = Undercover
 
     @rpc
     def check_win(self, data):
-        return 1
+        if("mrwhite_word" in data):
+            win = self.database.mrwhite_guess(data)
+            self.database.close_connection()
+            if win:
+                return "Mr. White wins!"
+            else:
+                return "Try again next time!"
+        elif("civilians" in data):
+            temp = self.database.get_all_alive_player()
+            self.database.close_connection()
+            win = 1
+            for i in temp:
+                if i['id_role'] == 0:
+                    win = 0
+                elif i['id_role'] == 2:
+                    win = 0
+            if win:
+                return "Civilian wins!"
+        elif("one_civilian" in data):
+            temp = self.database.get_all_alive_player()
+            self.database.close_connection()
+            civil_count = 0
+            for i in temp:
+                if i['id_role'] == 1:
+                    civil_count += 1
+            if civil_count == 1:
+                return "Mr. White and Undercover wins!"
 
-    @rpc
-    def mrwhite_guess(self, data):
-        win = self.database.mrwhite_guess(data)
-        self.database.close_connection()
-        if win:
-            return "Mr. White's guess is right!"
-        else:
-            return "Try again next time!"
-
-    ### GAME ROUND ###
+    ## GAME ROUND ##
     @rpc
     def create_round(self, data):
         result = {
@@ -74,7 +95,7 @@ class RoundService:
         result = self.database.get_roun d_by_id(data['id'])
         return schemas.RoundSchema().dump(result)
 
-    ### ROUND DETAIL ###
+    ## ROUND DETAIL ##
     @rpc
     def create_round_detail(self, data):
         result = {
@@ -131,7 +152,7 @@ class RoundService:
         result = self.database.get_round_detail_by_id(data['id'])
         return schemas.RoundDetailSchema().dump(result)
 
-    ### TURN DETAIL ###
+    ## TURN DETAIL ##
     @rpc
     def create_turn_detail(self, data):
         result = {
