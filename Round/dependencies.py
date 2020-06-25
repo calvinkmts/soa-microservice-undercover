@@ -20,7 +20,7 @@ class DatabaseWrapper:
         sql += " JOIN round_detail ON turn_detail.id_round_detail = round_detail.id "
         sql += " JOIN game_round ON round_detail.id_round = game_round.id "
         sql += " WHERE game_round.id = %s AND game_round.word1 = %s"
-        cursor.execute(sql, (data['id'], data['word1']))
+        cursor.execute(sql, (data['id'], data['mrwhiteword']))
         result = cursor.fetchone()
         cursor.close()
         return result
