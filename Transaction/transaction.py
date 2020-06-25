@@ -71,6 +71,7 @@ class TransactionService:
         else:
             result['err'] = 1
             result['msg'] = 'User Not Found'
+        self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
