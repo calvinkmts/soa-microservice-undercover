@@ -25,11 +25,8 @@ class DatabaseWrapper:
                 'id': row['id'],
                 'id_user': row['id_user'],
                 'id_word_pack': row['id_word_pack'],
-                'typee': row['type'],
                 'amount': row['amount'],
-                'code': row['code'],
-                'created_at': row['created_at'],
-                'updated_at': row['updated_at']
+                'created_at': row['created_at']
             })
         cursor.close()
         print(result[0]['created_at'])
