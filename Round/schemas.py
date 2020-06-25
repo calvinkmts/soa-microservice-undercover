@@ -27,6 +27,10 @@ class TurnDetailSchema(Schema):
     user_desc = fields.Str(required=True)
     status = fields.Int(required=True)
 
+class CommandResultSchema(Schema):
+    err = fields.Int(required=True)
+    msg = fields.Str(required=True)
+
 class ResultRoundSchema(Schema):
     status = fields.Int(required=True)
     msg = fields.Str(required=True)
