@@ -88,6 +88,14 @@ class DatabaseWrapper:
         cursor.close()
         return result
 
+    def get_round_detail_by_round_id(self, id_round):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "SELECT * FROM round_detail WHERE id_round = {}".format(id_round)
+        cursor.execute(sql)
+        result = cursor.fetchone()
+        cursor.close()
+        return result
+
     ## TURN DETAIL ##
 
     def create_turn_detail(self, id_round_detail, turn, user_word, user_desc):
