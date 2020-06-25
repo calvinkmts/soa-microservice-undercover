@@ -58,12 +58,12 @@ class GameService:
     def get_game_by_id(self, data):
         result = self.database.get_game_by_id(data['id'])
         return schemas.GameSchema().dump(result)
-    
+
     @rpc
     def get_game_by_schedule_id(self, data):
         result = self.database.get_game_by_schedule_id(data['id'])
         return schemas.GameSchema().dump(result)
-        
+
     ### GAME MEMBER ###
     @rpc
     def add_game_member(self, data):
@@ -119,7 +119,7 @@ class GameService:
     def get_game_member_by_game_id(self, data):
         result = self.database.get_game_member_by_game_id(data['id'])
         return schemas.GameMemberSchema(many=True).dump(result)
-    
+
     ### GAME WORD PACK ###
     @rpc
     def create_game_wordpack(self, data):

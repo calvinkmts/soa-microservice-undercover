@@ -24,7 +24,7 @@ class DatabaseWrapper:
         cursor.execute(sql, (data['created_at'], data['id_gamemaster'], data['id_schedule']))
         cursor.close()
         self.connection.commit()
-    
+
     def update_game(self, data):
         cursor = self.connection.cursor(dictionary=True)
         first = 1

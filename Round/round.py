@@ -55,116 +55,112 @@ class RoundService:
         return schemas.RoundSchema(many=True).dump(result)
 
     @rpc
-    def get_round_by_id(self, data):
+    def get_round_by_id(self, id):
         result = self.database.get_round_by_id(id)
         return schemas.GameSchema().dump(result)
 
     ### ROUND DETAIL ###
     @rpc
-    def add_game_member(self, data):
+    def create_round_detail(self, id_round, id_user, id_role, condition):
         result = {
             'err': 0,
-            'msg': 'Game Member Added'
+            'msg': 'Round Detail Created'
         }
-        if self.user_rpc.get_user_by_id(data['id_member']):
-            self.database.add_game_member(data)
-            self.database.close_connection()
-        else:
+        if not self.game_rpc.get_round_by_id(id_round):
+            result['err'] = 1
+            result['msg'] = 'Round Not Found'
+        elif not self.user_rpc.get_user_by_id(id_user):
             result['err'] = 1
             result['msg'] = 'User Not Found'
+        else:
+            self.database.create_round_detail(id_round, id_user, id_role, condition)
+            self.database.close_connection()
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def update_game_member(self, data):
+    def update_round_detail(self, id, id_user, condition):
         result = {
             'err': 0,
-            'msg': 'Game Member Updated'
+            'msg': 'Round Detail Updated'
         }
-        if self.database.get_game_member_by_id(data['id']):
-            self.database.update_game_member(data)
-        else:
+        if not self.database.get_round_detail_by_id(id):
             result['err'] = 1
-            result['msg'] = 'Game Member Not Found'
+            result['msg'] = 'Round Detail Not Found'
+        elif not self.user_rpc.get_user_by_id(id_user):
+            result['err'] = 1
+            result['msg'] = 'User Not Found'
+        else:
+            self.database.update_round_detail(id, id_user, condition)
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def delete_game_member(self, data):
+    def delete_round_detail(self, id):
         result = {
             'err': 0,
-            'msg': 'Game Member Deleted'
+            'msg': 'Round Detail Deleted'
         }
-        if self.database.get_game_member_by_id(data['id']):
-            self.database.delete_game_member(data)
+        if self.database.get_round_detail_by_id(id):
+            self.database.delete_round_detail(id)
         else:
             result['err'] = 1
-            result['msg'] = 'Game Member Not Found'
+            result['msg'] = 'Round Detail Not Found'
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def get_all_game_member(self):
-        result = self.database.get_all_game_member()
-        return schemas.GameMemberSchema(many=True).dump(result)
+    def get_all_round_detail(self):
+        result = self.database.get_all_round_detail()
+        return schemas.RoundDetailSchema(many=True).dump(result)
 
     @rpc
-    def get_game_member_by_id(self, data):
-        result = self.database.get_game_by_id(data['id'])
-        return schemas.GameMemberSchema().dump(result)
-
-    @rpc
-    def get_game_member_by_game_id(self, data):
-        result = self.database.get_game_member_by_game_id(data['id'])
-        return schemas.GameMemberSchema(many=True).dump(result)
+    def get_round_detail_by_id(self, id):
+        result = self.database.get_round_detail_by_id(id)
+        return schemas.RoundDetailSchema().dump(result)
 
     ### TURN DETAIL ###
     @rpc
-    def create_game_wordpack(self, data):
+    def create_turn_detail(self, id_round_detail, turn, user_word, user_desc):
         result = {
             'err': 0,
-            'msg': 'Game Wordpack Added'
+            'msg': 'Turn Detail Created'
         }
-        self.database.create_game_wordpack(data)
+        self.database.create_turn_detail(id_round_detail, turn, user_word, user_desc)
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def update_game_wordpack(self, data):
+    def update_turn_detail(self, id, id_round_detail, turn, user_word, user_desc):
         result = {
             'err': 0,
-            'msg': 'Game Wordpack Updated'
+            'msg': 'Turn Detail Updated'
         }
-        if self.database.get_game_wordpack_by_id(data['id']):
-            self.database.update_game_wordpack(data)
+        if self.database.get_turn_detail_by_id(id):
+            self.database.update_turn_detail(id)
         else:
             result['err'] = 1
-            result['msg'] = 'Game Wordpack Not Found'
+            result['msg'] = 'Turn Detail Not Found'
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def delete_game_wordpack(self, data):
+    def delete_turn_detail(self, id):
         result = {
             'err': 0,
-            'msg': 'Game Wordpack Deleted'
+            'msg': 'Turn Detail Deleted'
         }
-        if self.database.get_game_wordpack_by_id(data['id']):
-            self.database.delete_game_wordpack(data)
+        if self.database.get_turn_detail_by_id(id):
+            self.database.delete_turn_detail(id)
         else:
             result['err'] = 1
-            result['msg'] = 'Game Wordpack Not Found'
+            result['msg'] = 'Turn Detail Not Found'
         return schemas.CommandResultSchema().dumps(result)
 
     @rpc
-    def get_all_game_wordpack(self):
-        result = self.database.get_all_game_wordpack()
-        return schemas.GameWordpackSchema(many=True).dump(result)
+    def get_all_turn_detail(self):
+        result = self.database.get_all_turn_detail()
+        return schemas.TurnDetailSchema(many=True).dump(result)
 
     @rpc
-    def get_game_wordpack_by_id(self, data):
-        result = self.database.get_game_wordpack_by_id(data['id'])
-        return schemas.GameWordpackSchema().dump(result)
-
-    @rpc
-    def get_game_wordpack_by_game_id(self, data):
-        result = self.database.get_game_wordpack_by_game_id(data['id'])
-        return schemas.GameWordpackSchema(many=True).dump(result)
+    def get_turn_detail_by_id(self, id):
+        result = self.database.get_turn_detail_by_id(id)
+        return schemas.TurnDetailSchema().dump(result)
 
     def __del__(self):
         print("Service Destructor")

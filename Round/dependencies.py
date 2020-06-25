@@ -8,6 +8,8 @@ class DatabaseWrapper:
 
     connection = None
 
+    ## GAME ROUND ##
+
     def __init__(self, connection):
         print("DB Wrapper Constructor")
         self.connection = connection
@@ -48,6 +50,8 @@ class DatabaseWrapper:
         cursor.close()
         return result
 
+    ## ROUND DETAIL ##
+
     def create_round_detail(self, id_round, id_user, id_role, condition):
         cursor = self.connection.cursor(dictionary=True)
         sql = "INSERT INTO round_detail VALUES(default, %s, %s, %s, %s, 1)"
@@ -67,7 +71,7 @@ class DatabaseWrapper:
         cursor.execute(sql)
         cursor.close()
         self.connection.commit()
-    
+
     def get_all_round_detail(self):
         cursor = self.connection.cursor(dictionary=True)
         sql = "SELECT * FROM round_detail"
@@ -83,7 +87,9 @@ class DatabaseWrapper:
         result = cursor.fetchone()
         cursor.close()
         return result
-    
+
+    ## TURN DETAIL ##
+
     def create_turn_detail(self, id_round_detail, turn, user_word, user_desc):
         cursor = self.connection.cursor(dictionary=True)
         sql = "INSERT INTO turn_detail VALUES(default, %s, %s, %s, %s, 1)"
@@ -103,7 +109,7 @@ class DatabaseWrapper:
         cursor.execute(sql)
         cursor.close()
         self.connection.commit()
-    
+
     def get_all_turn_detail(self):
         cursor = self.connection.cursor(dictionary=True)
         sql = "SELECT * FROM turn_detail"
