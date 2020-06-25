@@ -159,7 +159,7 @@ class DatabaseWrapper:
         sql = "UPDATE turn_detail SET user_vote = %s WHERE id = %s AND id_round_detail = %s"
         cursor.execute( sql, (data['user_vote'], data['id'], data['id_round_detail']))
         cursor.close()
-        self.connection.commit()    
+        self.connection.commit()
 
     def update_turn_detail_status(self, data):
         cursor = self.connection.cursor(dictionary=True)

@@ -13,6 +13,8 @@ class RoundService:
     def __init__(self):
         print("Service Constructor")
 
+    ### UTILITY ###
+
     @rpc
     def check_win(self, data):
         return 1
@@ -69,7 +71,7 @@ class RoundService:
 
     @rpc
     def get_round_by_id(self, data):
-        result = self.database.get_round_by_id(data['id'])
+        result = self.database.get_roun d_by_id(data['id'])
         return schemas.RoundSchema().dump(result)
 
     ### ROUND DETAIL ###
