@@ -45,8 +45,8 @@ class DatabaseWrapper:
 
     def update_round(self, data):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "UPDATE game_round SET round = %s, num_mr_white = %s, num_civilian =%s, num_undercover = %s  WHERE id = %s"
-        cursor.execute( sql, (data['round'], data['num_mr_white'], data['num_civilian'], data['num_undercover'], data['id']))
+        sql = "UPDATE game_round SET round = %s, word1 = %s, word2 = %s, num_mr_white = %s, num_civilian =%s, num_undercover = %s WHERE id = %s"
+        cursor.execute( sql, (data['round'], data['word1'], data['word2'], data['num_mr_white'], data['num_civilian'], data['num_undercover'], data['id']))
         cursor.close()
         self.connection.commit()
 
@@ -130,15 +130,51 @@ class DatabaseWrapper:
     ## TURN DETAIL ##
 
     def create_turn_detail(self, data):
+        if('user_word' not in data):
+            data['user_word'] = None
+        if('user_desc' not in data):
+            data['user_desc'] = None
+        if('user_vote' not in data):
+            data['user_vote'] = None
+        if('status' not in data):
+            data['status'] = None
         cursor = self.connection.cursor(dictionary=True)
-        sql = "INSERT INTO turn_detail VALUES(default, %s, %s, %s, %s, 1)"
-        cursor.execute( sql, (data['id_round_detail'], data['turn'], data['user_word'], data['user_desc']))
+        sql = "INSERT INTO turn_detail VALUES(default, %s, %s, %s, %s, None, %s)"
+        cursor.execute( sql, (data['id_round_detail'], data['turn'], data['user_word'], data['user_desc'], data['status']))
         self.connection.commit()
 
     def update_turn_detail(self, data):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "UPDATE turn_detail SET turn = %s, user_word = %s, user_desc = %s, status = %s WHERE id = %s AND id_round_detail = %s"
-        cursor.execute( sql, (data['turn'], data['user_word'], data['user_desc'], data['status'], data['id'], data['id_round_detail']))
+        sql = "UPDATE turn_detail SET user_word = %s, user_desc = %s, status = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (data['user_word'], data['user_desc'], data['status'], data['id'], data['id_round_detail']))
+        cursor.close()
+        self.connection.commit()
+
+    def update_turn_detail_user_word(self, data):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE turn_detail SET user_desc = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (data['user_desc'], data['id'], data['id_round_detail']))
+        cursor.close()
+        self.connection.commit()
+
+    def update_turn_detail_user_desc(self, data):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE turn_detail SET user_desc = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (data['user_desc'], data['id'], data['id_round_detail']))
+        cursor.close()
+        self.connection.commit()
+
+    def update_turn_detail_user_vote(self, data):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE turn_detail SET user_vote = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (data['user_vote'], data['id'], data['id_round_detail']))
+        cursor.close()
+        self.connection.commit()    
+
+    def update_turn_detail_status(self, data):
+        cursor = self.connection.cursor(dictionary=True)
+        sql = "UPDATE turn_detail SET status = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (data['status'], data['id'], data['id_round_detail']))
         cursor.close()
         self.connection.commit()
 
@@ -151,7 +187,7 @@ class DatabaseWrapper:
 
     def get_all_turn_detail(self):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM turn_detail WHERE status = 1"
+        sql = "SELECT * FROM turn_detail"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
