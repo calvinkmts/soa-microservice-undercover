@@ -16,7 +16,7 @@ class DatabaseWrapper:
 
     def create_round(self, id_game, round, word1, word2, num_mr_white, num_civilian, num_undercover):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "INSERT INTO game_round VALUES(default, %s, %s, %s, %s, %s, %s, %s, 1)"
+        sql = "INSERT INTO game_round VALUES(default, %s, %s, %s, %s, %s, %s, %s)"
         cursor.execute( sql, (id_game, round, word1, word2, num_mr_white, num_civilian, num_undercover))
         self.connection.commit()
 
@@ -29,14 +29,14 @@ class DatabaseWrapper:
 
     def delete_round(self, id):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "UPDATE game_round SET status = 0 WHERE id = {}".format(id)
+        sql = "DELETE FROM game_round WHERE id = {}".format(id)
         cursor.execute(sql)
         cursor.close()
         self.connection.commit()
 
     def get_all_round(self):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM game_round WHERE status = 1"
+        sql = "SELECT * FROM game_round"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
@@ -54,7 +54,7 @@ class DatabaseWrapper:
 
     def create_round_detail(self, id_round, id_user, id_role, condition):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "INSERT INTO round_detail VALUES(default, %s, %s, %s, %s, 1)"
+        sql = "INSERT INTO round_detail VALUES(default, %s, %s, %s, %s)"
         cursor.execute( sql, (id_round, id_user, id_role, condition))
         self.connection.commit()
 
@@ -67,14 +67,14 @@ class DatabaseWrapper:
 
     def delete_round_detail(self, id):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "UPDATE round_detail SET status = 0 WHERE id = {}".format(id)
+        sql = "DELETE FROM round_detail WHERE id = {}".format(id)
         cursor.execute(sql)
         cursor.close()
         self.connection.commit()
 
     def get_all_round_detail(self):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "SELECT * FROM round_detail WHERE status = 1"
+        sql = "SELECT * FROM round_detail"
         cursor.execute(sql)
         result = cursor.fetchone()
         cursor.close()
@@ -96,16 +96,16 @@ class DatabaseWrapper:
         cursor.execute( sql, (id_round_detail, turn, user_word, user_desc))
         self.connection.commit()
 
-    def update_turn_detail(self, id, id_round_detail, turn, user_word, user_desc):
+    def update_turn_detail(self, id, id_round_detail, turn, user_word, user_desc, status):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "UPDATE turn_detail SET turn = %s, user_word = %s, user_desc = %s WHERE id = %s AND id_round_detail = %s"
-        cursor.execute( sql, (turn, user_word, user_desc, id, id_round_detail))
+        sql = "UPDATE turn_detail SET turn = %s, user_word = %s, user_desc = %s, status = %s WHERE id = %s AND id_round_detail = %s"
+        cursor.execute( sql, (turn, user_word, user_desc, status,  id, id_round_detail))
         cursor.close()
         self.connection.commit()
 
     def delete_turn_detail(self, id):
         cursor = self.connection.cursor(dictionary=True)
-        sql = "UPDATE turn_detail SET status = 0 WHERE id = {}".format(id)
+        sql = "DELETE FROM turn_detail WHERE id = {}".format(id)
         cursor.execute(sql)
         cursor.close()
         self.connection.commit()
