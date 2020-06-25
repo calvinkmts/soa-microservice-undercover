@@ -111,9 +111,11 @@ class TransactionService:
 
         # add user wordpack
             # function
-        
+        x = datetime.now()
+        inputTgl = x.strftime("%Y-%m-%d %H:%M:%S")
         if final==1:
             self.database.create_transaction({"id_user": data['id_user'], "id_word_pack": data['id_word_pack'],"amount": tmp['price']})
+            self.user_rpc.create_user_wordpack({"id_user": data['id_user'],"id_word_pack": data['id_word_pack'],"created_at": inputTgl,"updated_at":inputTgl})
 
         self.database.close_connection()
         
