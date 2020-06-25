@@ -1,7 +1,8 @@
-from nameko.rpc import rpc
+from nameko.rpc import rpc, RpcProxy
 
 import dependencies, schemas
 import json
+import datetime
 
 class GroupService:
     # ==========================================================
@@ -34,7 +35,7 @@ class GroupService:
     def create_group(self, name):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Group Created'
         }
 
         self.database.create_group(name)
@@ -44,7 +45,7 @@ class GroupService:
     def edit_group(self, id, name):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Group Updated'
         }
 
         self.database.edit_group(id, name)
@@ -54,7 +55,7 @@ class GroupService:
     def delete_group(self, id):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Group Deleted'
         }
 
         self.database.delete_group(id)
@@ -83,13 +84,13 @@ class GroupService:
         return schemas.ResultSchema().dumps(result)
 
     @rpc
-    def search_group(self,name):
+    def get_group_by_name(self,name):
         result = {
             'status': 0,
             'msg': ''
         }
 
-        result['data'] = self.database.search_group(name)
+        result['data'] = self.database.get_group_by_name(name)
         self.database.close_connection()
         return schemas.ResultSchema().dumps(result)
 
@@ -138,10 +139,10 @@ class GroupService:
         return schemas.ResultSchema().dumps(result)
 
     @rpc
-    def add_schedule(self, id_group, id_user, date, start_time):
+    def add_schedule(self, id_group, id_user, date, start_time, end_time):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Schedule Created'
         }
 
         self.database.add_schedule(id_group, id_user, date, start_time)
@@ -151,7 +152,7 @@ class GroupService:
     def edit_schedule_date(self, id, date):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Schedule Updated'
         }
 
         self.database.edit_schedule_date(id,date)
@@ -161,7 +162,7 @@ class GroupService:
     def edit_schedule_start(self, id, start_time):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Schedule Updated'
         }
 
         self.database.edit_schedule_start(id, start_time)
@@ -171,7 +172,7 @@ class GroupService:
     def edit_schedule_end(self, id, end_time):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Schedule Updated'
         }
 
         self.database.edit_schedule_end(id, end_time)
@@ -181,7 +182,7 @@ class GroupService:
     def delete_schedule(self, id):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Schedule Deleted'
         }
 
         self.database.delete_schedule(id)
@@ -192,7 +193,7 @@ class GroupService:
     def add_group_member(self, id_group, id_user):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Group Member Added'
         }
 
         self.database.add_group_member(id_group, id_user)
@@ -202,7 +203,7 @@ class GroupService:
     def remove_group_member(self, id):
         result = {
             'status': 0,
-            'msg': ''
+            'msg': 'Group Member Removed'
         }
 
         self.database.remove_group_member(id)
@@ -216,6 +217,86 @@ class GroupService:
         }
 
         result['data'] = self.database.search_group_member(id_group)
+        self.database.close_connection()
+        return schemas.ResultSchema().dumps(result)
+
+    @rpc
+    def get_all_group_member(self):
+        result = {
+            'status': 0,
+            'msg': ''
+        }
+
+        result['data'] = self.database.get_all_group_member()
+        self.database.close_connection()
+        return schemas.ResultSchema().dumps(result)
+
+    @rpc
+    def check_schedule(self):
+        result = {
+            'status': 0,
+            'msg': '',
+            'data': []
+        }
+
+        current_hour = datetime.datetime.now().hour
+        current_min = datetime.datetime.now().minute
+        menitNow = (int(current_hour) * 60) + (int(current_min))
+        hasil = self.database.check_schedule()
+        count = -1
+        if (len(hasil) != 0):
+            for i in hasil:
+                tanggal = str(i['date']) + " " + str(i['start_time'])
+                waktu = datetime.datetime.strptime(tanggal, '%Y-%m-%d %H:%M:%S')
+                menit = (int(waktu.hour) * 60) + (int(waktu.minute))
+                # print('now : ' + str(menitNow))
+                # print(menit)
+                if (menitNow == menit):
+                    result['msg'] = 'Room Created'
+                    count = count + 1
+                    result['data'].append({
+                        'id_schedule': i['id'],
+                        'id_gamemaster' : i['id_user']
+                    })
+                    self.game_rpc.create_game(result['data'][count])
+
+        self.database.close_connection()
+        if(count == -1):
+            result['msg'] = 'No Room Created'
+        return schemas.ResultSchema().dumps(result)
+
+    @rpc
+    def close_schedule_game(self):
+        result = {
+            'status': 0,
+            'msg': 'No Room Deleted'
+        }
+
+        hasilSchedule = []
+        count = -1
+
+        schedule = self.database.get_all_schedule()
+        for i in schedule:
+            hasilSchedule.append({
+                'id': i['id']
+            })
+            count = count + 1
+            id_game = self.game_rpc.get_game_by_schedule_id(hasilSchedule[count])
+            
+            if(self.database.check_close_schedule_game(i['end_time'], i['date']) == True):
+                
+                if('id' in id_game):
+                    kirimanGameId = []
+                    kirimanGameId.append({
+                        'id': id_game['id']
+                    })
+                    
+                    game_member = self.game_rpc.get_game_member_by_game_id(kirimanGameId[0])
+                    
+                    if (self.database.close_schedule_game(game_member) == True):
+                        self.game_rpc.delete_game(kirimanGameId[0])
+                        result['msg'] = 'Room Deleted'
+        
         self.database.close_connection()
         return schemas.ResultSchema().dumps(result)
 
