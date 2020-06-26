@@ -201,7 +201,7 @@ class DatabaseWrapper:
     def get_wordpair_by_wordpack_id(self, id):
         cursor = self.connection.cursor(dictionary=True)
         result = {}
-        sql = "SELECT * FROM wordpair WHERE id_wordpack = {}".format((id))
+        sql = "SELECT * FROM wordpair WHERE id_word_pack = {}".format((id))
         cursor.execute(sql)
         i = random.randrange(0, cursor.rowcount, 1)
         for row in cursor.fetchall():
