@@ -219,7 +219,6 @@ class TransactionService:
                         print(dt_string)
                         result['err'] = 0
                         result['msg'] = 'Voucher Redeemed by' + " " + tmp['name']
-                        self.transaction_rpc.create_transaction({"id_user": data['redeemed_by'], "id_word_pack": 0, "type": 'REDEEM', "amount": topup, "code": data['code'], "created_at": dt_string,"updated_at": dt_string })
                     else:
                         result['err'] = 0
                         result['msg'] = 'Voucher Cant be Redeemed'
