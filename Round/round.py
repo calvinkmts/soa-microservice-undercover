@@ -29,7 +29,7 @@ class RoundService:
             else:
                 return "Try again next time!"
         elif("civilians" in data):
-            temp = self.database.get_all_alive_player()
+            temp = self.database.get_all_alive_player(data)
             self.database.close_connection()
             win = 1
             for i in temp:
@@ -40,7 +40,7 @@ class RoundService:
             if win:
                 return "Civilian wins!"
         elif("one_civilian" in data):
-            temp = self.database.get_all_alive_player()
+            temp = self.database.get_all_alive_player(data)
             self.database.close_connection()
             civil_count = 0
             for i in temp:
